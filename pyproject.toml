@@ -1,0 +1,13 @@
+[project]
+name = "aur0ra"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "logtail-python>=0.3.3",
+    "lxml>=5.3.1",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+]
