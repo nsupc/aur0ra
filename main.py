@@ -5,6 +5,7 @@ import yaml
 
 from bs4 import BeautifulSoup as bs
 from logtail import LogtailHandler
+from string import Template
 from typing import List
 
 
@@ -51,6 +52,7 @@ class Config:
         self.eurocore_url = data["eurocore_url"]
         self.eurocore_user = data["eurocore_user"]
         self.eurocore_password = data["eurocore_password"]
+        self.rmbpost_author = data["rmbpost_author"]
         self.rmbpost_template = data["rmbpost_template"]
         self.population_cache = data["population_cache"]
 
@@ -84,7 +86,7 @@ def format_pings(nations: str) -> str:
     elif len(nations) == 2:
         return " and ".join(nations)
     else:
-        return ", ".join(nations[:-1]) + ", and " + [nations[-1]]
+        return ", ".join(nations[:-1]) + ", and " + nations[-1]
 
 
 def login(url: str, username: str, password: str) -> str:
@@ -109,13 +111,16 @@ def post(
 ) -> int:
     url = f"{url}/rmbposts"
 
-    headers = {"Authentication", f"Bearer: {token}"}
+    headers = {"Authorization": f"Bearer {token}"}
 
     with open(template_path, "r") as in_file:
-        text = in_file.read()
-        text.replace("@@NATIONS@@", format_pings(nations))
+        text = Template(in_file.read())
 
-    data = {"nation": author, "region": region, "text": text}
+    data = {
+        "nation": author,
+        "region": region,
+        "text": text.substitute(nations=format_pings(nations)),
+    }
 
     resp = requests.post(url=url, headers=headers, json=data)
     resp.raise_for_status()
@@ -172,6 +177,8 @@ def main():
         )
     except requests.HTTPError:
         logging.exception("unable to post rmbpost")
+
+    write_old_pop(config.population_cache, pop)
 
 
 if __name__ == "__main__":
