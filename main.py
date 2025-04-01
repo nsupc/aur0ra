@@ -173,7 +173,7 @@ def main():
             config.rmbpost_template,
             config.rmbpost_author,
             config.region,
-            pop,
+            new_pop,
         )
     except requests.HTTPError:
         logging.exception("unable to post rmbpost")
