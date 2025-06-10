@@ -3,7 +3,7 @@ import requests
 from string import Template
 from typing import List
 
-from utils import format_pings
+from .utils import format_pings
 
 
 def login(url: str, username: str, password: str) -> str:
