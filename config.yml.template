@@ -9,7 +9,7 @@ eurocore:
 rmbpost: 
   author:
   template_path:
-log_config:
+log:
   token: 
   host: 
   level: 
